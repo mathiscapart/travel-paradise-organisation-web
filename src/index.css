@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+
+@theme {
+  --font-jersey: "Jersey 20", sans-serif;
+  --font-roboto: "Roboto", sans-serif;
+  --font-vietnam: "Be Vietnam Pro", sans-serif;
+}
