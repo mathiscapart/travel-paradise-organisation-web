@@ -1,31 +1,34 @@
 import axios from 'axios';
+import {jwt_decode} from 'jwt-decode';
+import { IUser } from '../context/AuthContext';
 
-interface LoginResponse {
-    result: {
-        id: number;
-        role: string;
-    };
+interface JwtPayload extends IUser {
+    iat: number;
+    exp: number;
 }
 
-interface UserCredentials {
-    id: number;
-    role: string;
-}
 async function CheckUserCredentials(
     email: string,
     password: string
-): Promise<UserCredentials | null> {
-    const apiUrl = "http://172.16.33.151:3400/login";
-    try {
-        const res = await axios.post<LoginResponse>(apiUrl, {
-            email,
-            password,
-        });
+): Promise<IUser | null> {
+    const apiUrl = "http://172.16.33.151:3000/login";
 
-        if (res.status === 200 && res.data && res.data.result) {
+    try {
+        const res = await axios.post(apiUrl, { email, password });
+
+        if (res.status === 200 && res.data?.token) {
+            const decoded = jwt_decode<JwtPayload>(res.data.token);
             return {
-                id: res.data.result.id,
-                role: res.data.result.role,
+                id: decoded.id,
+                email: decoded.email,
+                role: decoded.role,
+                firstName: decoded.firstName,
+                lastName: decoded.lastName,
+                country: '',     // Tu peux adapter si ces infos viennent d’ailleurs
+                phone: '',
+                language: '',
+                organisationId: decoded.organisationId,
+
             };
         } else {
             return null;

@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import {useAuth} from "../context/AuthContext.tsx";
 import {
     PlusIcon,
     ChartBarIcon,
@@ -6,11 +7,14 @@ import {
     CalendarIcon,
     SunIcon,
     UsersIcon,
-    ChevronDownIcon,
     ChevronRightIcon, ArrowLeftStartOnRectangleIcon, Cog8ToothIcon,
 } from "@heroicons/react/24/outline";
 
 function Nav() {
+
+    const user = useAuth().user;
+    console.log(user)
+
     return (
         <div className="min-w-70 w-1/6 h-screen font-vietnam bg-white shadow-xl flex flex-col justify-start pt-10 gap-7 items-center">
             <Link to="/" className="">
@@ -35,16 +39,6 @@ function Nav() {
                     <Squares2X2Icon className="h-5" /> Overview
                 </NavLink>
                 <NavLink
-                    to="/graphics"
-                    className={({ isActive }) =>
-                        isActive
-                            ? "bg-blue-50 flex justify-start pl-4 gap-3 items-center w-full h-10 rounded duration-200 hover:bg-blue-100"
-                            : "flex justify-start pl-4 gap-3 items-center w-full h-10 rounded duration-200 hover:bg-blue-100"
-                    }
-                >
-                    <ChartBarIcon className="h-5" /> Graphics
-                </NavLink>
-                <NavLink
                     to="/reservations"
                     className={({ isActive }) =>
                         isActive
@@ -65,17 +59,14 @@ function Nav() {
                     <div className="flex items-center gap-3">
                         <SunIcon className="h-5" /> Visits
                     </div>
-                    <span className="bg-blue-600 text-white text-xs rounded-full px-2">
-            32
-          </span>
+
                 </NavLink>
                 <div className="flex flex-col">
                     <button className="flex justify-between pl-4 pr-3 items-center w-full h-10 text-blue-950 rounded duration-200 hover:bg-blue-100">
                         <div className="flex items-center gap-3">
                             <UsersIcon className="h-5" /> Teams
                         </div>
-                        <ChevronDownIcon className="h-4" />
-                    </button>
+                        </button>
                     <div className="flex flex-col pl-8 gap-2 text-blue-950 text-gray-400">
                         <NavLink
                             to="/users"
@@ -91,13 +82,15 @@ function Nav() {
                             Guides
                             <ChevronRightIcon className="h-3" />
                         </NavLink>
+
+                        {user?.role == 'admin' && (
                         <NavLink
-                            to="/admin"
+                            to="/admins"
                             className="flex items-center gap-3 hover:text-blue-600"
                         >
                             Admin
                             <ChevronRightIcon className="h-3" />
-                        </NavLink>
+                        </NavLink> )}
                     </div>
                 </div>
                 <NavLink
@@ -119,13 +112,13 @@ function Nav() {
                         className="w-8 h-8 rounded-full"
                     />
                     <div className="flex flex-col text-sm text-blue-950">
-                        <span>Jenny Wilson</span>
-                        <span className="text-gray-400">jen.wilson@example.com</span>
+                        <span>{user?.lastName} {user?.firstName}</span>
+                        <span className="text-gray-400">{user?.email}</span>
                     </div>
                 </div>
-                <button className="flex justify-center items-center w-full h-10 bg-blue-50 text-blue-950 rounded hover:bg-blue-100 hover:text-blue-600 duration-200">
+                <NavLink to="/logout" className="flex justify-center items-center w-full h-10 bg-blue-50 text-blue-950 rounded hover:bg-blue-100 hover:text-blue-600 duration-200">
                     <ArrowLeftStartOnRectangleIcon className="h-5" /> Log out
-                </button>
+                </NavLink>
             </div>
         </div>
     );

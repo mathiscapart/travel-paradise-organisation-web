@@ -53,20 +53,6 @@ const LastVisits = () => {
                             />
                             <span className="ml-2">{visit.name}</span>
                         </div>
-                        <div className="flex mt-4">
-                            {[...Array(5)].map((_, i) => (
-                                <svg
-                                    key={i}
-                                    className={`w-6 h-6 ${i < visit.notation ? 'text-blue-700' : 'text-blue-300'}`}
-                                    fill="currentColor"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 17.77L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
-                                </svg>
-                            ))}
-                        </div>
                     </div>
                 ))}
             </div>

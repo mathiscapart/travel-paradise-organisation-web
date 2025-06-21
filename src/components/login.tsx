@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.tsx';
-import CheckUserCredentials from "./user.api.ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload extends IUser {
+    iat: number;
+    exp: number;
+}
 
 
 function Login() {
@@ -10,57 +15,83 @@ function Login() {
     const { login } = useAuth();
     const [isLogged, setIsLogged] = useState(false);
     const navigate = useNavigate();
-    const handleSubmit = async (event: React.FormEvent) => {
+
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
-        const userResp = await CheckUserCredentials(email, password);
+        const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+    if (response.ok && data.token) {
+        const decoded = jwtDecode<JwtPayload>(data.token);
 
-        if (userResp) {
-            const { id: userId, role: userRole } = userResp;
+        login({
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role,
+            firstName: decoded.firstName,
+            lastName: decoded.lastName,
+            country: '',
+            phone: '',
+            language: '',
+            organisationId: decoded.organisationId
+        });
 
-            login({
-                id: userId,
-                email,
-                password,
-                role: userRole,
-            });
-            setIsLogged(true);
-            navigate("/");
-        } else {
-            setIsLogged(false);
-            alert("Invalid credentials");
-        }
+        setIsLogged(true);
+        navigate("/");
+    } else {
+        setIsLogged(false);
+        alert(data.error || "Invalid credentials");
+    }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col justify-center items-center w-screen gap-3 mt-14 p-5 ">
-            <div className="flex flex-col justify-center items-center  w-1/3 bg-slate-900 p-5 rounded-2xl shadow-xl space-y-6">
-                <h2 className="text-indigo-500 font-jersey text-3xl">Welcome back!</h2>
-                <input
-                    type="text"
-                    placeholder="Email"
-                    value={email}
-                    className="w-2/3 pt-3 bg-slate-800 rounded-md text-sm font-medium text-gray-300 p-2"
-                    onChange={(e) => setEmail(e.target.value)}
+        <div className="w-screen bg-white flex">
+            <div className="flex-1 flex bg-white items-center justify-center bg-gray-100 h-screen p-5">
+                <img
+                    className="w-full h-full object-cover rounded-xl"
+                    src="https://images.unsplash.com/photo-1487553333251-6c8e26d3dc2c?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Plane"
                 />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    className="w-2/3 pt-3 bg-slate-800 rounded-md text-sm font-medium text-gray-300 p-2"
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <p className="flex gap-1 text-gray-500">
-                    Don't have an account ?{" "}
-                    <span className="text-indigo-500 underline hover:text-indigo-400 duration-200">
-            Register Now!
-          </span>
-                </p>
-                {isLogged && <h3>User logged</h3>}
-                <button type="submit" className="bg-blue-900 text-white py-2 px-4 rounded">
-                    Log In
-                </button>
             </div>
-        </form>
+            <div className="flex-1 flex items-center justify-center">
+                <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 p-8 bg-white rounded-lg">
+                    <h2 className="text-3xl font-bold text-gray-800 ">Login</h2>
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full p-3 bg-blue-50 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-3 bg-blue-50 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                        />
+                    </div>
+                    <button type="submit" className="w-2/3 bg-blue-600 text-white py-3 rounded-md">
+                        Log In
+                    </button>
+                    <p className=" text-gray-600">
+                        Don't have an account?{" "}
+                        <a href="/register" className="text-blue-600 hover:underline">
+                            Register
+                        </a>
+                    </p>
+                    {isLogged && <p className="text-green-500 ">User logged</p>}
+                </form>
+            </div>
+        </div>
     );
 }
 

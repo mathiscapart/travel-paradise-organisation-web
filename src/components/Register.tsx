@@ -1,137 +1,136 @@
 import { useState } from 'react';
 import axios from 'axios';
-function RegisterForm() {
-    const [formData, setFormData] = useState({
-        firstname: '',
-        lastname: '',
+
+function RegisterWithOrganisationForm() {
+    const [orgData, setOrgData] = useState({
+        name: '',
+        description: '',
+        country: '',
+        address: '',
+        logo: ''
+    });
+
+    const [userData, setUserData] = useState({
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
-        role: 'user',
+        role: 'admin',
+        country: '',
+        phone: '',
+        language: '',
+        avatar: '' // Champ requis côté back
     });
 
     const [success, setSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const handleOrgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setOrgData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMessage('');
+        setSuccess(false);
 
         try {
-            await axios.post('http://172.16.33.151:3400/user', {
-                firstname: formData.firstname,
-                lastname: formData.lastname,
-                email: formData.email,
-                password: formData.password,
-                role: formData.role,
+            const orgResponse = await axios.post('http://127.0.0.1:3000/organisations', {
+                ...orgData,
+                isAuthorized: false
+            });
+
+            const orgId = orgResponse.data.id;
+
+            await axios.post('http://127.0.0.1:3000/users', {
+                ...userData,
+                organisationId: orgId
             });
 
             setSuccess(true);
-            setFormData({
-                firstname: '',
-                lastname: '',
+            setOrgData({
+                name: '',
+                description: '',
+                country: '',
+                address: '',
+                logo: ''
+            });
+            setUserData({
+                firstName: '',
+                lastName: '',
                 email: '',
                 password: '',
-                role: 'user',
+                role: 'admin',
+                country: '',
+                phone: '',
+                language: '',
+                avatar: ''
             });
-        } catch (error) {
-            console.error('Erreur lors de l\'enregistrement :', error);
-            setSuccess(false);
+        } catch (error: any) {
+            console.error("Erreur lors de la création :", error);
+
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 409) {
+                    setErrorMessage("L'organisation ou l'utilisateur existe déjà.");
+                } else if (error.response?.status === 500) {
+                    setErrorMessage("Erreur interne du serveur. Veuillez réessayer plus tard.");
+                } else {
+                    setErrorMessage("Erreur : " + error.response?.data?.message || error.message);
+                }
+            } else {
+                setErrorMessage("Une erreur inattendue s’est produite.");
+            }
         }
     };
 
     return (
-        <div className="flex items-start justify-center pt-24 px-4 w-screen min-h-screen">
-            <form
-                onSubmit={handleSubmit}
-                className="w-full max-w-md bg-slate-800 p-8 rounded-2xl shadow-xl space-y-6"
-            >
-                <h2 className="text-2xl font-semibold text-gray-300 text-center">
-                    Inscription
-                </h2>
-
-                <div>
-                    <label className="font-medium mb-1 flex text-indigo-500">
-                        Prénom
-                        <p className="text-red-200">*</p>
-                    </label>
-                    <input
-                        type="text"
-                        name="firstname"
-                        onChange={handleChange}
-                        value={formData.firstname}
-                        placeholder="Entrez votre prénom"
-                        required
-                        className="w-full bg-slate-700 placeholder:text-slate-400 text-white p-3 rounded"
-                    />
-                </div>
-
-                <div>
-                    <label className="font-medium mb-1 flex text-indigo-500">
-                        Nom
-                        <p className="text-red-200">*</p>
-                    </label>
-                    <input
-                        type="text"
-                        name="lastname"
-                        onChange={handleChange}
-                        value={formData.lastname}
-                        placeholder="Entrez votre nom"
-                        required
-                        className="w-full bg-slate-700 placeholder:text-slate-400 text-white p-3 rounded"
-                    />
-                </div>
-
-                <div>
-                    <label className="font-medium mb-1 flex text-indigo-500">
-                        Email
-                        <p className="text-red-200">*</p>
-                    </label>
-                    <input
-                        type="email"
-                        name="email"
-                        onChange={handleChange}
-                        value={formData.email}
-                        placeholder="Entrez votre email"
-                        required
-                        className="w-full bg-slate-700 placeholder:text-slate-400 text-white p-3 rounded"
-                    />
-                </div>
-
-                <div>
-                    <label className="font-medium mb-1 flex text-indigo-500">
-                        Mot de passe
-                        <p className="text-red-200">*</p>
-                    </label>
-                    <input
-                        type="password"
-                        name="password"
-                        onChange={handleChange}
-                        value={formData.password}
-                        placeholder="Entrez un mot de passe"
-                        required
-                        className="w-full bg-slate-700 placeholder:text-slate-400 text-white p-3 rounded"
-                    />
-                </div>
-
-                <button
-                    type="submit"
-                    className="w-full bg-indigo-700 text-white p-3 rounded hover:bg-indigo-600 duration-100"
-                >
-                    S’inscrire
-                </button>
-
-                {success && (
-                    <p className="text-green-700 text-center">
-                        Inscription réussi!
+        <div className="w-screen bg-white flex">
+            <div className="flex-1 flex items-center justify-center bg-gray-100 h-screen p-5">
+                <img
+                    className="w-full h-full object-cover rounded-xl"
+                    src="https://images.unsplash.com/photo-1487553333251-6c8e26d3dc2c?q=80&w=1287&auto=format&fit=crop"
+                    alt="Plane"
+                />
+            </div>
+            <div className="flex-1 flex items-center justify-center">
+                <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 p-8 bg-white rounded-lg">
+                    <h2 className="text-3xl font-bold text-gray-800">Register Organisation</h2>
+                    <p className="text-gray-600">
+                        Already have an account?{" "}
+                        <a href="/login" className="text-blue-600 hover:underline">Login</a>
                     </p>
-                )}
-            </form>
+
+                    <input type="text" name="name" placeholder="Organisation Name" value={orgData.name} onChange={handleOrgChange} required className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="description" placeholder="Description" value={orgData.description} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="country" placeholder="Organisation Country" value={orgData.country} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="address" placeholder="Address" value={orgData.address} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="logo" placeholder="Logo URL" value={orgData.logo} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
+
+                    <hr className="my-4" />
+
+                    <div className="flex space-x-4">
+                        <input type="text" name="firstName" placeholder="First name" value={userData.firstName} onChange={handleUserChange} required className="w-1/2 p-3 bg-blue-50 rounded-md" />
+                        <input type="text" name="lastName" placeholder="Last name" value={userData.lastName} onChange={handleUserChange} required className="w-1/2 p-3 bg-blue-50 rounded-md" />
+                    </div>
+                    <input type="email" name="email" placeholder="Email" value={userData.email} onChange={handleUserChange} required className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="password" name="password" placeholder="Password" value={userData.password} onChange={handleUserChange} required className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="country" placeholder="User Country" value={userData.country} onChange={handleUserChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="phone" placeholder="Phone" value={userData.phone} onChange={handleUserChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="language" placeholder="Language" value={userData.language} onChange={handleUserChange} className="w-full p-3 bg-blue-50 rounded-md" />
+                    <input type="text" name="avatar" placeholder="Avatar (URL)" value={userData.avatar} onChange={handleUserChange} className="w-full p-3 bg-blue-50 rounded-md" />
+
+                    <button type="submit" className="w-2/3 bg-blue-600 text-white py-3 rounded-md">Register</button>
+
+                    {success && <p className="text-green-500 text-center">Organisation et admin créés avec succès !</p>}
+                    {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+                </form>
+            </div>
         </div>
     );
 }
 
-export default RegisterForm;
+export default RegisterWithOrganisationForm;
