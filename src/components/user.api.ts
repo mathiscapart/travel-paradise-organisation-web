@@ -24,7 +24,7 @@ async function CheckUserCredentials(
                 role: decoded.role,
                 firstName: decoded.firstName,
                 lastName: decoded.lastName,
-                country: '',     // Tu peux adapter si ces infos viennent d’ailleurs
+                country: '',
                 phone: '',
                 language: '',
                 organisationId: decoded.organisationId,

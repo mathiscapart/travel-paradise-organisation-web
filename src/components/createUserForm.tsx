@@ -28,7 +28,7 @@ function CreateUserForm() {
         try {
             const payload = {
                 ...formData,
-                organisationId: user?.organisationId, // l'organisation de l'utilisateur connecté
+                organisationId: user?.organisationId,
             };
 
             console.log("Payload envoyé :", payload);

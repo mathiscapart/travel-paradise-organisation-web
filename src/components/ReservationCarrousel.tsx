@@ -1,4 +1,3 @@
-// ReservationCarousel.jsx
 
 
 const reservations = [
@@ -14,7 +13,6 @@ const reservations = [
     { date: '2023-12-28', location: 'Tokyo', name: 'Fredrick Kimper', upcoming: true },{ date: '2023-12-19', location: 'Bruxelles', name: 'Amber Loris', upcoming: true },
     { date: '2023-12-22', location: 'Berlin', name: 'Sam Duje', upcoming: true },
     { date: '2023-12-28', location: 'Tokyo', name: 'Fredrick Kimper', upcoming: true },
-    // Ajoutez plus d'exemples ici
 ];
 
 const ReservationCarousel = () => {
@@ -36,7 +34,7 @@ const ReservationCarousel = () => {
                         <div className="mt-2">{reservation.location}</div>
                         <div className="flex items-center mt-4">
                             <img
-                                src={`https://i.pravatar.cc/150?img=${index + 1}`} // Image d'avatar fictive
+                                src={`https://i.pravatar.cc/150?img=${index + 1}`}
                                 alt={reservation.name}
                                 className="w-8 h-8 rounded-full"
                             />

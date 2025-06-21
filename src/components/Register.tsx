@@ -19,7 +19,7 @@ function RegisterWithOrganisationForm() {
         country: '',
         phone: '',
         language: '',
-        avatar: '' // Champ requis côté back
+        avatar: ''
     });
 
     const [success, setSuccess] = useState(false);
