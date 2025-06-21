@@ -89,7 +89,7 @@ function RegisterWithOrganisationForm() {
 
     return (
         <div className="w-screen bg-white flex">
-            <div className="flex-1 flex items-center justify-center bg-gray-100 h-screen p-5">
+            <div className="flex-1 flex items-center justify-center bg-white h-screen p-5">
                 <img
                     className="w-full h-full object-cover rounded-xl"
                     src="https://images.unsplash.com/photo-1487553333251-6c8e26d3dc2c?q=80&w=1287&auto=format&fit=crop"
@@ -110,8 +110,7 @@ function RegisterWithOrganisationForm() {
                     <input type="text" name="address" placeholder="Address" value={orgData.address} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
                     <input type="text" name="logo" placeholder="Logo URL" value={orgData.logo} onChange={handleOrgChange} className="w-full p-3 bg-blue-50 rounded-md" />
 
-                    <hr className="my-4" />
-
+                    <div className={"h-0.5 w-full bg-blue-600"}></div>
                     <div className="flex space-x-4">
                         <input type="text" name="firstName" placeholder="First name" value={userData.firstName} onChange={handleUserChange} required className="w-1/2 p-3 bg-blue-50 rounded-md" />
                         <input type="text" name="lastName" placeholder="Last name" value={userData.lastName} onChange={handleUserChange} required className="w-1/2 p-3 bg-blue-50 rounded-md" />

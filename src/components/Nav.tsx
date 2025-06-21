@@ -93,16 +93,7 @@ function Nav() {
                         </NavLink> )}
                     </div>
                 </div>
-                <NavLink
-                    to="/settings"
-                    className={({ isActive }) =>
-                        isActive
-                            ? "bg-blue-50 flex justify-start pl-4 gap-3 items-center w-full h-10 rounded duration-200 hover:bg-blue-100"
-                            : "flex justify-start pl-4 gap-3 items-center w-full h-10 rounded duration-200 hover:bg-blue-100"
-                    }
-                >
-                    <Cog8ToothIcon className="h-5" /> Settings
-                </NavLink>
+
             </div>
             <div className="flex flex-col w-6/7 gap-2 mt-auto mb-5">
                 <h3>Profile</h3>
