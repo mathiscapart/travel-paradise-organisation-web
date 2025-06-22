@@ -3,7 +3,6 @@ import Home from "./components/Home.tsx";
 import Layout from "./components/Layout.tsx";
 import ErrorPage from "./components/ErrorPage.tsx";
 import Login from "./components/login.tsx";
-import Admin from "./components/Admin.tsx";
 import { UserProvider } from "./components/user.provider.tsx";
 import RegisterForm from "./components/Register.tsx";
 import Profile from "./components/Profile.tsx";
@@ -65,16 +64,6 @@ const router = createBrowserRouter([
                     <ProtectedRoute>
                         <UserProvider>
                             <DeleteUser />
-                        </UserProvider>
-                    </ProtectedRoute>
-                ),
-            },
-            {
-                path: "/admin",
-                element: (
-                    <ProtectedRoute>
-                        <UserProvider>
-                            <Admin />
                         </UserProvider>
                     </ProtectedRoute>
                 ),

@@ -2,12 +2,11 @@ import { Link, NavLink } from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import {
     PlusIcon,
-    ChartBarIcon,
     Squares2X2Icon,
     CalendarIcon,
     SunIcon,
     UsersIcon,
-    ChevronRightIcon, ArrowLeftStartOnRectangleIcon, Cog8ToothIcon,
+    ChevronRightIcon, ArrowLeftStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 function Nav() {
